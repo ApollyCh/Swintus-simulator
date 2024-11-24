@@ -1,7 +1,7 @@
+from agent import Agent
 from deck import Deck
 from player import Player
 from round import Round
-from agent import Agent
 
 # Define environment and agent settings
 # Initialize environment and agent settings
@@ -54,9 +54,9 @@ for episode in range(num_episodes):
     print(f"Episode {episode + 1}/{num_episodes} - Epsilon: {agent.epsilon:.4f}")
     with open("logs.txt", "a") as f:
         f.write(
-            f"Episode {episode + 1}/{num_episodes} - Epsilon: {agent.epsilon:.4f}, Overall Total Reward: {overall_total_reward}\n")
+            f"Episode {episode + 1}/{num_episodes} - Epsilon: {agent.epsilon:.4f}, Overall Total Reward: {overall_total_reward}\n"
+        )
 
     # Save model every 100 episodes
     if (episode + 1) % 100 == 0:
         agent.save_model(f"model_episode_{episode + 1}.h5")
-

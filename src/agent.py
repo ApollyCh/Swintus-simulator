@@ -1,10 +1,10 @@
-import random
-import numpy as np
-from collections import deque
-from tensorflow.keras import models, layers
-
 import os
+import random
+from collections import deque
+
+import numpy as np
 import tensorflow as tf
+from tensorflow.keras import layers, models
 
 
 class Agent:
@@ -23,18 +23,18 @@ class Agent:
 
     def create_model(self):
         model = models.Sequential()
-        model.add(layers.Dense(64, activation='relu', input_shape=(self.state_size,)))
-        model.add(layers.Dense(64, activation='relu'))
-        model.add(layers.Dense(1, activation='linear'))
-        model.compile(optimizer='adam', loss='mse')
+        model.add(layers.Dense(64, activation="relu", input_shape=(self.state_size,)))
+        model.add(layers.Dense(64, activation="relu"))
+        model.add(layers.Dense(1, activation="linear"))
+        model.compile(optimizer="adam", loss="mse")
         return model
 
     def process_state(self, state):
         # Pad or trim the state to fit `state_size`
         if len(state) < self.state_size:
-            return np.pad(state, (0, self.state_size - len(state)), mode='constant')
+            return np.pad(state, (0, self.state_size - len(state)), mode="constant")
         else:
-            return np.array(state[:self.state_size])
+            return np.array(state[: self.state_size])
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -44,12 +44,13 @@ class Agent:
             return random.choice(valid_actions)
 
         processed_state = self.process_state(state).reshape(-1, self.state_size)
-        action_values = [self.model.predict(processed_state)[0][0] for _ in valid_actions]
+        action_values = [
+            self.model.predict(processed_state)[0][0] for _ in valid_actions
+        ]
         best_action = valid_actions[np.argmax(action_values)]
         return best_action
 
     def replay(self):
-
         tf.keras.utils.disable_interactive_logging()
         if len(self.memory) < self.BATCH_SIZE:
             return
@@ -57,9 +58,13 @@ class Agent:
         minibatch = random.sample(self.memory, self.BATCH_SIZE)
         for state, action, reward, next_state, done in minibatch:
             target = reward
-            processed_next_state = self.process_state(next_state).reshape(-1, self.state_size)
+            processed_next_state = self.process_state(next_state).reshape(
+                -1, self.state_size
+            )
             if not done:
-                target += self.DISCOUNT_FACTOR * np.max(self.model.predict(processed_next_state)[0])
+                target += self.DISCOUNT_FACTOR * np.max(
+                    self.model.predict(processed_next_state)[0]
+                )
 
             processed_state = self.process_state(state).reshape(-1, self.state_size)
             target_f = self.model.predict(processed_state)

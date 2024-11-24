@@ -1,4 +1,5 @@
 import random
+
 import numpy as np
 from deck import Deck
 from player import Player
@@ -9,7 +10,20 @@ class Round:
     PLAY_CARD_REWARD = 10
     SPECIAL_CARD_REWARD = 15
     DRAW_CARD_REWARD = -5
-    CARD_VALUES = [0, 1, 2, 3, 4, 5, 6, 7, "Zahrapin", "Perehruck", "Khapezh", "Polyswin"]
+    CARD_VALUES = [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        "Zahrapin",
+        "Perehruck",
+        "Khapezh",
+        "Polyswin",
+    ]
     CARD_COLORS = ["Pink", "Blue", "Green", "Yellow", "WILD"]
 
     def __init__(self, deck, players):
@@ -50,8 +64,14 @@ class Round:
         player = self.players[self.current_player_idx]
 
         # Check if the action is to play a card
-        played_card = next((card for card in player.hand if card.color == action.color and card.value == action.value),
-                           None)
+        played_card = next(
+            (
+                card
+                for card in player.hand
+                if card.color == action.color and card.value == action.value
+            ),
+            None,
+        )
 
         # While the player cannot play a card, allow them to draw cards
         while not played_card:
@@ -72,7 +92,6 @@ class Round:
                 if card.color == action.color and card.value == action.value:
                     played_card = card
                     break
-
 
         # If a playable card is found, proceed to play it
         if played_card and played_card.is_playable(self.top_card):
@@ -142,12 +161,16 @@ class Round:
         to_draw_array = np.array([self.to_draw])
 
         # Combine to create the state
-        state = np.concatenate((top_card_color_vector, top_card_value_vector, hand_array, to_draw_array))
+        state = np.concatenate(
+            (top_card_color_vector, top_card_value_vector, hand_array, to_draw_array)
+        )
 
         return state
 
     def draw_cards_next(self, num_cards):
-        next_player = self.players[(self.current_player_idx + self.direction) % len(self.players)]
+        next_player = self.players[
+            (self.current_player_idx + self.direction) % len(self.players)
+        ]
 
         if len(self.deck.cards) < num_cards:
             self.deck.drawn_cards = self.discarded
@@ -157,10 +180,14 @@ class Round:
             next_player.draw_card(self.deck)
 
     def skip_next_player(self):
-        self.current_player_idx = (self.current_player_idx + 2 * self.direction) % len(self.players)
+        self.current_player_idx = (self.current_player_idx + 2 * self.direction) % len(
+            self.players
+        )
 
     def advance_turn(self):
-        self.current_player_idx = (self.current_player_idx + self.direction) % len(self.players)
+        self.current_player_idx = (self.current_player_idx + self.direction) % len(
+            self.players
+        )
 
     def draw_card_action(self):
         if len(self.deck.cards) == 0:

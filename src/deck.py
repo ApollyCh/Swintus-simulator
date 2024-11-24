@@ -1,10 +1,11 @@
 import random
+
 from card import Card
 
 
 class Deck:
     """A deck of cards.
-        Each deck has 94 cards. 64 of them are normal cards, 30 are special cards.
+    Each deck has 94 cards. 64 of them are normal cards, 30 are special cards.
     """
 
     def __init__(self):
