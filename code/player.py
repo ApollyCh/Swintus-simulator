@@ -5,14 +5,22 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.hand = []
-        self.state = {}
-        self.actions = {}
 
     def draw_card(self, deck):
         card = deck.draw_card()
         self.hand.append(card)
 
-        self.evaluate_hand(deck)
+    def play_card(self, card, top_card):
+        if card.is_playable(top_card):
+            self.hand.remove(card)
+            return card
+        return None
 
-    def evaluate_hand(self, deck):
-        pass
+    def valid_actions(self, top_card):
+        return [card for card in self.hand if card.is_playable(top_card)]
+
+    def clean_hand(self):
+        self.hand = []
+
+    def __str__(self):
+        return self.name

@@ -26,11 +26,18 @@ class Deck:
         random.shuffle(self.cards)
 
     def draw_card(self):
-        if len(self.cards) == 0:
-            self.cards = self.drawn_cards
-            self.drawn_cards = []
-
         return self.cards.pop()
 
     def discard_card(self, card):
         self.drawn_cards.append(card)
+
+    def reset(self):
+        self.cards = []
+        self.drawn_cards = []
+        self.create_deck()
+        self.shuffle_deck()
+
+    def resample(self):
+        self.cards += self.drawn_cards
+        self.drawn_cards = []
+        self.shuffle_deck()
