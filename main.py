@@ -80,7 +80,7 @@ def show_game_result(payoffs):
     """Display the game results."""
     print("\n" + "=" * 40)
     print("Game Over!")
-    print("You " + "win! 🎉" if payoffs[0] > 0 else "lose! 💔")
+    print("You " + ("win! 🎉" if payoffs[0] > 0 else "lose! 💔"))
     print("=" * 40 + "\n")
 
 
