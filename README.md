@@ -106,6 +106,79 @@ indicators for:
   episodes demonstrated steady improvement despite natural fluctuations inherent
   to card games.
 
+### Reward System
+
+### Reward System
+
+The reward system played a pivotal role in guiding the agent's learning process
+during both implementations. Below is a breakdown of the reward mechanisms used:
+
+#### First Implementation (TensorFlow)
+
+In the first implementation, a custom reward system was designed to encourage
+the agent to take specific actions aligned with the rules and strategies of
+Swintus. The rewards were assigned as follows:
+
+| **Reward Type**  | **Reward Value** |
+| ---------------- | ---------------- |
+| **Win**          | 200              |
+| **Play Card**    | 10               |
+| **Special Card** | 15               |
+| **Draw Card**    | -5               |
+
+- **Win**: The agent was given a significant positive reward for winning the
+  game, reinforcing the ultimate goal of depleting its hand of cards.
+- **Play Card**: Playing a valid card earned a modest reward, encouraging the
+  agent to minimize its hand.
+- **Special Card**: Playing a valid action card provided a slightly higher
+  reward due to the strategic advantage these cards confer.
+- **Draw Card**: Drawing a card, which often signifies a lack of viable moves,
+  resulted in a penalty to dissuade this action unless absolutely necessary.
+
+This reward structure provided a clear incentive hierarchy, guiding the agent to
+prioritize efficient strategies.
+
+#### Second Implementation (RLCard)
+
+For the second implementation, we utilized the reward system integrated into the
+RLCard framework, which includes a pre-built `DQNAgent` class tailored for card
+game environments. This agent class implements the fundamental components of a
+Deep-Q Network (DQN) and provides several key functionalities:
+
+- **DQNAgent**: The primary class that interacts with the environment, executing
+  actions based on the learned policy and observing the rewards.
+- **Normalizer**: Preprocesses the state by maintaining a running mean and
+  standard deviation. This ensures the state inputs are normalized before being
+  fed into the neural network, stabilizing learning.
+- **Memory**: A memory buffer that stores transitions (state, action, reward,
+  next state) and enables sampling during training. This mechanism supports
+  experience replay, allowing the agent to learn from past experiences and
+  improve sample efficiency.
+- **Estimator**: The neural network responsible for making predictions,
+  including estimating the Q-values for each possible action in a given state.
+
+RLCard’s `DQNAgent` implements a robust reward function designed for card games,
+which inherently accounts for:
+
+- **Game Outcomes**: Positive rewards for winning and penalties for losing,
+  driving the agent to optimize its strategy for successful outcomes.
+- **Intermediate Actions**: Rewards or penalties based on specific actions
+  during the game, incentivizing efficient gameplay while discouraging
+  counterproductive behaviors.
+- **Strategic Learning**: The agent learns not only immediate rewards but also
+  how to maximize cumulative rewards over time, leveraging both long-term and
+  short-term memory.
+
+By extending RLCard to include a custom Swintus environment, we ensured
+compatibility with its DQN architecture while taking advantage of these built-in
+mechanisms. This approach allowed the agent to learn effectively in a complex
+card game environment with minimal modifications to RLCard's underlying
+structure.
+
+The integration of RLCard’s reward system, combined with its DQN framework,
+contributed to the agent’s ability to develop advanced strategies and
+dynamically adapt to varying game scenarios.
+
 ### Results and Insights
 
 ![Gameplay](.github/demo.gif)
