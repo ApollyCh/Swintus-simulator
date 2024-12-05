@@ -1,12 +1,5 @@
 # Swintus Game
 
-## Team Members
-
-| Name                   | Innomail                          |
-| ---------------------- | --------------------------------- |
-| Egor Machnev           | e.machnev@innopolis.university    |
-| Apollinaria Chernikova | a.chernikova@innopolis.university |
-
 ## Introduction
 
 This project focuses on developing a reinforcement learning (RL) agent capable
@@ -22,20 +15,22 @@ agent's learning and decision-making capabilities.
 Our project draws inspiration from several established frameworks and research
 papers in the RL domain:
 
-1. **RLCard Framework**: The RLCard library served as the foundation for
-   building an adaptable RL-compatible environment tailored to Swintus.
-   Modifications were made to accommodate the unique game rules.
-2. **"Playing Atari with Deep Reinforcement Learning"**: The foundational work
-   by Mnih et al. (2013) on DQN was instrumental in guiding the architecture and
-   implementation of our agent.
+1. **[RLCard Framework](https://github.com/datamllab/rlcard)**: The RLCard
+   library served as the foundation for building an adaptable RL-compatible
+   environment tailored to Swintus. Modifications were made to accommodate the
+   unique game rules.
+2. **["Playing Atari with Deep Reinforcement Learning"](https://arxiv.org/abs/1312.5602)**:
+   The foundational work by Mnih et al. (2013) on DQN was instrumental in
+   guiding the architecture and implementation of our agent.
 3. **Additional References**:
-   - _Deep Reinforcement Learning for General Game Playing_ (Foerster et al.,
-     2017): Insights into multi-agent and strategic gameplay.
-   - _Multi-Agent Reinforcement Learning in Sequential Social Dilemmas_ (Leibo
-     et al., 2017): Relevant for multi-agent learning dynamics in Swintus.
-   - _An Introduction to Deep Reinforcement Learning_ (Francois-Lavet et al.,
-     2018): A comprehensive overview of RL methods.
-   - _Experience Replay for Continual Learning_ (Rolnick et al., 2019):
+   - [_"Deep Reinforcement Learning for General Game Playing"_ (Foerster _et al._,
+     2017)](https://arxiv.org/abs/1806.02448): Insights into multi-agent and
+     strategic gameplay.
+   - [_"Multi-Agent Reinforcement Learning in Sequential Social Dilemmas"_ (Leibo _et al._, 2017)](https://arxiv.org/abs/1702.03037):
+     Relevant for multi-agent learning dynamics in Swintus.
+   - [_"An Introduction to Deep Reinforcement Learning"_ (Francois-Lavet _et al._, 2018)](https://arxiv.org/abs/1811.12560):
+     A comprehensive overview of RL methods.
+   - [_"Experience Replay for Continual Learning"_ (Rolnick _et al._, 2019)](https://arxiv.org/abs/1811.11682):
      Experience replay techniques, which were critical for our DQN
      implementation.
 
@@ -143,20 +138,17 @@ simulation environment. The DQN agent exhibited strong performance,
 demonstrating adaptability and strategic gameplay even against non-random
 opponents.
 
-## Recommendations for Future Research
+## Team Members
 
-1. **Extended Training**: Additional training episodes to enhance performance
-   and stability.
-2. **Complex Rules**: Reintroducing omitted rules to test the agent's ability to
-   handle intricate scenarios.
-3. **Diverse Opponents**: Experimenting with heuristic-based or human players to
-   assess robustness.
-4. **Alternative Architectures**: Exploring PPO or Actor-Critic methods for
-   comparative insights.
-5. **Framework Scalability**: Adapting the Swintus environment to other RL
-   frameworks for broader applicability.
+| Name                   | Innomail                          | Role           | Key Contributions                                                                 |
+| ---------------------- | --------------------------------- | -------------- | --------------------------------------------------------------------------------- |
+| Egor Machnev           | e.machnev@innopolis.university    | Lead Developer | Developed the second version of the system utilizing RLCard and PyTorch.          |
+| Apollinaria Chernikova | a.chernikova@innopolis.university | ML Engineer    | Created the initial agent using TensorFlow and conducted preliminary experiments. |
 
-## GitHub Link
+> Working together to train models, document the process, design experiments and
+> measure metrics.
+
+## Additional Resources
 
 The full implementation is available at the
 [Swintus Simulator GitHub Repository](https://github.com/ApollyCh/Swintus-simulator).
