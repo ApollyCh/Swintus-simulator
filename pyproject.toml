@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "swintus"
+version = "0.1.0"
+description = "RL 🤖 A Learning Agent for the Card Game \"Свинтус\" (Swintus)"
+authors = [
+    "Egor Machnev <e.machnev@innopolis.university>",
+    "Apollinaria Chernikova <a.chernikova@innopolis.university>",
+]
+readme = "README.md"
+keywords = ["python", "reinforcement-learning", "turn-based", "swintus"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+rlcard = "^1.2.0"
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.9"
+black = "^24.4.2"
+ipykernel = "^6.29.5"
+ipython = "^8.25.0"
+isort = "^5.13.2"
+mypy = "^1.10.0"
+pre-commit = "^3.7.1"
+ruff = "^0.4.8"
+
+[tool.poetry.group.test.dependencies]
+polyfactory = "^2.16.2"
+pytest = "^8.2.2"
+pytest-aio = "^1.8.1"
+pytest-async = "^0.1.1"
+pytest-cov = "^5.0.0"
+pytest-sugar = "^1.0.0"
+pytest-xdist = "^3.6.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.ruff]
+exclude = [".mypy_cache", ".ruff_cache", ".venv", "venv", "build", "dist"]
+line-length = 88
+fix = true
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I"]
+fixable = ["ALL"]
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
