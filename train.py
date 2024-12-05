@@ -35,8 +35,8 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def initialize_agent(env, args, device):
-    """Initialize the agent based on the algorithm and checkpoint."""
+def create_agent(env, args, device):
+    """Create the agent based on the algorithm and checkpoint."""
     if args.algorithm == "dqn":
         from rlcard.agents import DQNAgent
 
@@ -76,10 +76,10 @@ def save_model(agent, log_dir):
     """Save the trained model."""
     save_path = os.path.join(log_dir, "model.pth")
     torch.save(agent, save_path)
-    print("Model saved in", save_path)
+    print(f"Model saved in {save_path}")
 
 
-def train_model(env, args, learner):
+def train_agent(env, args, learner):
     """Train the agent using the specified arguments and environment."""
     with Logger(args.log_dir) as logger:
         for episode in range(args.num_episodes):
@@ -103,29 +103,22 @@ def train_model(env, args, learner):
 
 
 def main():
-    # Setup
+    """Run the main training loop."""
     args = parse_arguments()
     os.environ["CUDA_VISIBLE_DEVICES"] = args.cuda
-    device = get_device()
     set_seed(args.seed)
+    device = get_device()
 
-    # Create environment
     env = Environroment({"seed": args.seed, "allow_step_back": False})
+    learner = create_agent(env, args, device)
 
-    # Create agents
-    agents = []
+    agents = [
+        learner,
+        *(RandomAgent(num_actions=env.num_actions) for _ in range(1, env.num_players)),
+    ]
 
-    learner = initialize_agent(env, args, device)
-    agents.append(learner)
-
-    for _ in range(env.num_players):
-        agents.append(RandomAgent(num_actions=env.num_actions))
-
-    # Set agents
     env.set_agents(agents)
-
-    # Train the model
-    train_model(env, args, learner)
+    train_agent(env, args, learner)
 
 
 if __name__ == "__main__":
