@@ -1,147 +1,162 @@
-# RL Project "Swintus simulator"
+# Swintus Game
 
-## The game
+## Team Members
 
-Swintus (Piglet, in English meaning) is a fast-paced card game similar to Uno,
-with its own unique set of rules and special cards. The game is designed for
-2-10 players, where the objective is to be the first to get rid of all the cards
-in your hand.
+| Name                   | Innomail                          |
+| ---------------------- | --------------------------------- |
+| Egor Machnev           | e.machnev@innopolis.university    |
+| Apollinaria Chernikova | a.chernikova@innopolis.university |
 
-<div align="center">
-<img src=".github/game.png" width="400" >
-</div>
+## Introduction
 
-## Description of project
+This project focuses on developing a reinforcement learning (RL) agent capable
+of playing the Russian card game "Swintus" (Свинтус). The primary objective was
+to design a simulation environment and an intelligent agent leveraging RL
+techniques, specifically Deep Q-Networks (DQN), to master gameplay strategies
+through interactions within the simulated environment. Our implementation
+integrates custom-built environments with external frameworks to enhance the RL
+agent's learning and decision-making capabilities.
 
-This project uses reinforcement learning to simulate the card game "Свинтус"
-(https://swintus.ru). The goal is to create an intelligent agent that can learn
-to play the game well by practicing and adapting. We want to see how well the
-agent can play "Свинтус".
+## Related Work
 
-## The environment
+Our project draws inspiration from several established frameworks and research
+papers in the RL domain:
 
-We can describe the environment using rules for the game.
+1. **RLCard Framework**: The RLCard library served as the foundation for
+   building an adaptable RL-compatible environment tailored to Swintus.
+   Modifications were made to accommodate the unique game rules.
+2. **"Playing Atari with Deep Reinforcement Learning"**: The foundational work
+   by Mnih et al. (2013) on DQN was instrumental in guiding the architecture and
+   implementation of our agent.
+3. **Additional References**:
+   - _Deep Reinforcement Learning for General Game Playing_ (Foerster et al.,
+     2017): Insights into multi-agent and strategic gameplay.
+   - _Multi-Agent Reinforcement Learning in Sequential Social Dilemmas_ (Leibo
+     et al., 2017): Relevant for multi-agent learning dynamics in Swintus.
+   - _An Introduction to Deep Reinforcement Learning_ (Francois-Lavet et al.,
+     2018): A comprehensive overview of RL methods.
+   - _Experience Replay for Continual Learning_ (Rolnick et al., 2019):
+     Experience replay techniques, which were critical for our DQN
+     implementation.
 
-Players take turns playing cards from their hand by matching the color or number
-of the top card on the discard pile. Special action cards introduce unique
-effects, such as forcing players to skip turns, reverse the play order, or make
-other players draw additional cards.
+These resources provided both theoretical and practical guidance throughout the
+project.
 
-At the end, when a player has only one card left in their hand, they must shout
-"Swintus!" If they fail to do so and another player notices, the player who
-forgot must draw additional cards as a penalty, adding an extra layer of
-strategy and attention to the game. The first player to successfully play all
-their cards wins the game.
+## Methodology
 
-## The action space
+### Card Types
 
-The action space is the set of all possible actions that the agent can take in
-the environment. In this case, the agent can make the following actions:
+Swintus features a variety of cards, categorized as follows:
 
-### Play a card
+1. **Number Cards**: Cards (0-7) in four colors: red, green, blue, and yellow,
+   totaling 64 cards.
+2. **Action Cards**: Special effect cards, such as Skip (S), Reverse (R), Draw 3
+   (D), and Wild (W). Certain complex action cards, like Silent Hush (Тихохрюн)
+   and Cotton Paw (Хлопкопыт), were excluded for simplicity.
 
-The game has several types of cards.
+![Card Types](.github/cards.png)
 
-<div align="center">
-<img src=".github/cards.png" width="400" >
-</div>
+### Decision Tree
 
-<div align="center">
-<img src=".github/cards2.jpeg" >
-</div>
+The gameplay involves the following decision-making process:
 
-- **Regular cards**: These cards have a color and a number. To play a regular
-  card, the agent must match the color or number of the top card on the discard
-  pile.
-- **Special cards**:
-  - Skip (Захрапин): The next player in the turn order is skipped.
-  - Reverse (Перехрюк): The play order is reversed.
-  - Draw 3 (Хапеж): The next player must draw 2 cards.
-  - Wild (Полисвин): The agent can play this card on any color.
+1. Match the top card on the discard pile by color or number.
+2. Play a special action card if applicable.
+3. Draw a card from the deck if no valid moves exist.
 
-Also, the game has two cards that we cannot implement in ordinal way:
+This simplified decision tree enabled the RL agent to learn and optimize its
+strategies effectively.
 
-- Silent Hush (Тихохрюн) Action: When the Silent Hush card is played, all
-  players at the table must remain silent for one entire round. If anyone breaks
-  this rule and speaks, they must draw two penalty cards.
-- Cotton Paw (Хлопкопыт) Action: When the Cotton Paw card is played, all players
-  must immediately place their hands on the deck. The last player to do so
-  receives two penalty cards, adding an element of urgency and excitement to the
-  game.
+![Decision Tree](.github/decision-tree.png)
 
-We are going to try to implement Cotton Paw card, but Silent Hush card is
-impossible to implement in the environment for now.
+### Deep Q-Network Architecture
 
-### Draw a card
+The RLCard-based DQN agent used three super states as input and predicted five
+super actions. This abstraction reduced complexity, making the training process
+more efficient.
 
-If the player cannot play any cards from their hand, they can choose to draw a
-card from the deck.
+![Simple DQN](.github/simple-dqn.png)
 
-**Outcome**:
+### State Space Representation
 
-- If the drawn card can be played (matches the top card of the discard pile),
-  the player has the option to play it immediately.
-- If the drawn card cannot be played, the turn ends, and the next player takes
-  their turn.
+We represented the state space using one-hot encoding to transform game states
+into structured inputs. The dimensions included:
 
-### Call "Swintus"
+- **Hyperplanes (4)**: Indicators for card availability in the player's hand.
+- **Colors (4)**: Representing the card colors.
+- **Traits (12)**: Numeric and action-based card attributes.
 
-When a player has only one card left in their hand, they must shout "Svintus!"
-to alert other players.
+![State Space](.github/state-space.png)
 
-**Important**: If a player forgets to call "Swintus" and another player notices,
-the player who forgot must draw additional two cards as a penalty.
+### Hyperplanes
 
-## Preliminary reward function
+The hyperplanes encoded the agent's current hand and game state, including
+indicators for:
 
-For now, we can use the following reward function:
+1. A card's availability.
+2. A card's occurrence in single or double copies.
+3. The top card on the discard pile.
 
-### Positive rewards
+![Hyperplanes](.github/hyper-planes.png)
 
-- Winning the game: _+100_
+## Experiments and Evaluation
 
-  When the agent successfully plays all its cards and wins the game.
-- Playing a card: _+10_
+### Training and Performance
 
-  Each time the agent plays a valid card (regular or special) during its turn.
-- Use of special card effectively: _+15_
+- **First Implementation**: Using TensorFlow, the initial training took over 21
+  hours for 1000 episodes. However, this approach showed suboptimal results due
+  to its architectural simplicity and inefficiency.
+- **Second Implementation**: Transitioning to PyTorch and the RLCard framework
+  improved training times and performance significantly. Training for 5000
+  episodes demonstrated steady improvement despite natural fluctuations inherent
+  to card games.
 
-  When the agent plays a special action card that benefits its strategy (e.g.,
-  skipping an opponent’s turn or making them draw cards).
-- Drawing a Playable Card: _+5_
+### Results and Insights
 
-  When the agent draws a card from the deck that can be played immediately.
+![Gameplay](.github/demo.gif)
 
-### Negative rewards
+- Performance metrics for both implementations are available:
+  - [TensorFlow results](experiments/tensorflow)
+  - [RLCard DQN results](experiments/rlcard_dqn)
+- To play with our agent, run [main.py](main.py).
 
-- Receiving Penalty Cards: _-10_
+![Training Progress](experiments/rlcard_dqn/fig.png)
 
-  When the agent receives penalty cards for forgetting to call "Swintus."
-- Inability to Play: _-3_
+## Analysis and Observations
 
-  If the agent ends its turn without playing any cards (i.e., it has to draw a
-  card without playing).
+1. **Training Efficiency**: Transitioning to PyTorch and RLCard enhanced
+   scalability and reduced computational demands.
+2. **Performance Trends**: While fluctuations occurred due to random opponents,
+   the overall trend indicated strategic learning.
+3. **Simplifications**: Excluding complex cards (e.g., Silent Hush and Cotton
+   Paw) accelerated training while maintaining gameplay integrity.
+4. **Environment Adaptation**: Successfully adapting Swintus rules to RLCard's
+   DQN architecture highlighted the flexibility of modular frameworks.
+5. **Future Potential**: Extended training episodes and the inclusion of more
+   complex gameplay elements could further refine the agent's performance.
 
-### Neutral rewards
+## Conclusion
 
-- Playing a card that does not affect the game: _0_
+This project successfully applied reinforcement learning techniques to the game
+of Swintus. By leveraging RLCard's architecture, we developed an efficient
+simulation environment. The DQN agent exhibited strong performance,
+demonstrating adaptability and strategic gameplay even against non-random
+opponents.
 
-  At the end of a turn, whether the agent played a card or not, to encourage
-  learning about maintaining the game state without necessarily gaining or
-  losing points.
+## Recommendations for Future Research
 
-## Timeline
+1. **Extended Training**: Additional training episodes to enhance performance
+   and stability.
+2. **Complex Rules**: Reintroducing omitted rules to test the agent's ability to
+   handle intricate scenarios.
+3. **Diverse Opponents**: Experimenting with heuristic-based or human players to
+   assess robustness.
+4. **Alternative Architectures**: Exploring PPO or Actor-Critic methods for
+   comparative insights.
+5. **Framework Scalability**: Adapting the Swintus environment to other RL
+   frameworks for broader applicability.
 
-Now, we research and define the state-space and action-space for the game. The
-next steps for the project are as follows:
+## GitHub Link
 
-- Implement the basic RL framework and test the agent in the environment.
-- Fine-tune the reward function and run more complex training simulations.
-- Test and evaluate the agent’s performance in various game scenarios.
-
-## Team
-
-| Name                   | Innomail                          | Role                        |
-| ---------------------- | --------------------------------- | --------------------------- |
-| Apollinaria Chernikova | a.chernikova@innopolis.university | Data Scientist, RL Engineer |
-| Egor Machnev           | e.machnev@innopolis.university    | RL Engineer, MLOps          |
+The full implementation is available at the
+[Swintus Simulator GitHub Repository](https://github.com/ApollyCh/Swintus-simulator).
